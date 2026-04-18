@@ -1,0 +1,27 @@
+{
+    "name": "survos/dummy-bundle",
+    "description": "DummyJSON-backed demo entities and data loader for Symfony applications",
+    "keywords": [
+        "symfony",
+        "symfony-bundle",
+        "dummyjson",
+        "demo"
+    ],
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "require": {
+        "php": "^8.4",
+        "doctrine/doctrine-bundle": "^3.0",
+        "doctrine/orm": "^3.3",
+        "symfony/config": "^8.0",
+        "symfony/console": "^8.0",
+        "symfony/dependency-injection": "^8.0",
+        "symfony/http-kernel": "^8.0",
+        "twig/twig": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Survos\\DummyBundle\\": "src/"
+        }
+    }
+}
