@@ -3,7 +3,8 @@
 Doctrine-backed demo entities and a loader for DummyJSON data.
 
 Current scope:
-- `Product` and `Image` entities
+- `User`, `Post`, and `Comment` entities with relations
+- `Product`, `Image`, and `ProductReview` entities
 - repository services
 - Doctrine mapping registration by the bundle
 - `dummy:load` command
@@ -41,9 +42,28 @@ bin/console dummy:load --purge
 bin/console doctrine:query:sql "select count(*) from product"
 ```
 
+## Entity Diagram
+
+Generate the ER diagram in the demo app root:
+
+```bash
+composer req --dev jawira/doctrine-diagram-bundle
+mkdir -p docs
+bin/console doctrine:diagram:er --filename=docs/er.svg --exclude=doctrine_migration_versions,messenger_messages
+```
+
+Then include it in your project README with a few lines of markdown:
+
+```md
+## Entity Diagram
+
+![Entity Diagram](docs/er.svg)
+```
+
 ## Notes
 
-- The bundle currently loads products from `https://dummyjson.com/products?limit=200` by default.
-- Use `bin/console dummy:load --source=/path/to/products.json` to load from a local file.
-- Use `bin/console dummy:load --limit=20` to import a smaller sample.
-- Use `bin/console dummy:load --purge` to clear `image` and `product` rows before reloading.
+- `dummy:load` loads users, posts, comments, products, product reviews, and images.
+- It prints a final summary with how many of each entity were loaded.
+- DummyJSON post comments belong to both a post and a user.
+- DummyJSON product reviews are embedded on products and include reviewer name/email, not a user id.
+- `dummy:load` hard-codes the DummyJSON endpoints for now.

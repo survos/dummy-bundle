@@ -19,6 +19,12 @@ class Product
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'product', orphanRemoval: true, cascade: ['persist'])]
     private Collection $images;
 
+    /**
+     * @var Collection<int, ProductReview>
+     */
+    #[ORM\OneToMany(targetEntity: ProductReview::class, mappedBy: 'product', orphanRemoval: true, cascade: ['persist'])]
+    private Collection $reviews;
+
     public function __construct(
         #[ORM\Id]
         #[ORM\Column(type: Types::STRING, length: 255)]
@@ -28,7 +34,11 @@ class Product
         private array $data = [],
     ) {
         $this->images = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
+
+    #[ORM\Column(type: Types::INTEGER, unique: true, nullable: true)]
+    private ?int $dummyId = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $title = null;
@@ -59,9 +69,11 @@ class Product
         return $this->sku;
     }
 
-    public function getData(): array
+    public function setDummyId(?int $dummyId): self
     {
-        return $this->data;
+        $this->dummyId = $dummyId;
+
+        return $this;
     }
 
     public function setData(array $data): self
@@ -71,21 +83,11 @@ class Product
         return $this;
     }
 
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
     public function setTitle(?string $title): self
     {
         $this->title = $title;
 
         return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
     }
 
     public function setDescription(?string $description): self
@@ -95,21 +97,11 @@ class Product
         return $this;
     }
 
-    public function getBrand(): ?string
-    {
-        return $this->brand;
-    }
-
     public function setBrand(?string $brand): self
     {
         $this->brand = $brand;
 
         return $this;
-    }
-
-    public function getCategory(): ?string
-    {
-        return $this->category;
     }
 
     public function setCategory(?string $category): self
@@ -119,21 +111,11 @@ class Product
         return $this;
     }
 
-    public function getExactPrice(): ?float
-    {
-        return $this->exactPrice;
-    }
-
     public function setExactPrice(?float $exactPrice): self
     {
         $this->exactPrice = $exactPrice;
 
         return $this;
-    }
-
-    public function getRating(): int
-    {
-        return $this->rating;
     }
 
     public function setRating(int $rating): self
@@ -143,21 +125,11 @@ class Product
         return $this;
     }
 
-    public function getStock(): int
-    {
-        return $this->stock;
-    }
-
     public function setStock(int $stock): self
     {
         $this->stock = $stock;
 
         return $this;
-    }
-
-    public function getTags(): array
-    {
-        return $this->tags;
     }
 
     public function setTags(array $tags): self
@@ -167,26 +139,21 @@ class Product
         return $this;
     }
 
-    public function getThumbnail(): ?string
-    {
-        $thumbnail = $this->data['thumbnail'] ?? null;
-
-        return is_string($thumbnail) ? $thumbnail : null;
-    }
-
-    /**
-     * @return Collection<int, Image>
-     */
-    public function getImages(): Collection
-    {
-        return $this->images;
-    }
-
     public function addImage(Image $image): self
     {
         if (!$this->images->contains($image)) {
             $this->images->add($image);
             $image->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function addReview(ProductReview $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setProduct($this);
         }
 
         return $this;

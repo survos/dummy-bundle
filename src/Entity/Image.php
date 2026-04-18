@@ -44,43 +44,9 @@ class Image implements \Stringable
         return $this->code;
     }
 
-    public function getProduct(): ?Product
-    {
-        return $this->product;
-    }
-
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
-
-        return $this;
-    }
-
-    public function getOriginalUrl(): ?string
-    {
-        return $this->originalUrl;
-    }
-
-    public function getResized(): ?array
-    {
-        return $this->resized;
-    }
-
-    public function setResized(?array $resized): self
-    {
-        $this->resized = $resized;
-
-        return $this;
-    }
-
-    public function getOriginalSize(): ?int
-    {
-        return $this->originalSize;
-    }
-
-    public function setOriginalSize(?int $originalSize): self
-    {
-        $this->originalSize = $originalSize;
 
         return $this;
     }
