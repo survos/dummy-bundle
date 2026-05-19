@@ -32,7 +32,7 @@ class Comment
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
     private int $likes = 0;
 
-    #[ORM\Column(type: Types::JSON, nullable: true, options: ['jsonb' => true])]
+    #[ORM\Column(type: Types::JSONB, nullable: true)]
     private array $data = [];
 
     public function getId(): int

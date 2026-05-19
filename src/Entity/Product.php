@@ -30,7 +30,7 @@ class Product
         #[ORM\Column(type: Types::STRING, length: 255)]
         private string $sku,
 
-        #[ORM\Column(type: Types::JSON, nullable: true, options: ['jsonb' => true])]
+        #[ORM\Column(type: Types::JSONB, nullable: true)]
         private array $data = [],
     ) {
         $this->images = new ArrayCollection();
@@ -61,7 +61,7 @@ class Product
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
     private int $stock = 0;
 
-    #[ORM\Column(type: Types::JSON, nullable: true, options: ['jsonb' => true])]
+    #[ORM\Column(type: Types::JSONB, nullable: true)]
     private array $tags = [];
 
     public function getSku(): string

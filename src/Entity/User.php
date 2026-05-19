@@ -35,7 +35,7 @@ class User
         $this->comments = new ArrayCollection();
     }
 
-    #[ORM\Column(type: Types::JSON, nullable: true, options: ['jsonb' => true])]
+    #[ORM\Column(type: Types::JSONB, nullable: true)]
     private array $data = [];
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]

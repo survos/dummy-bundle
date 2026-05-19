@@ -31,7 +31,7 @@ class Post
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
-    #[ORM\Column(type: Types::JSON, nullable: true, options: ['jsonb' => true])]
+    #[ORM\Column(type: Types::JSONB, nullable: true)]
     private array $data = [];
 
     #[ORM\Column(type: Types::STRING, length: 255)]
@@ -40,7 +40,7 @@ class Post
     #[ORM\Column(type: Types::TEXT)]
     private string $body = '';
 
-    #[ORM\Column(type: Types::JSON, nullable: true, options: ['jsonb' => true])]
+    #[ORM\Column(type: Types::JSONB, nullable: true)]
     private array $tags = [];
 
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]

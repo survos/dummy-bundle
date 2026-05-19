@@ -28,7 +28,7 @@ class Image implements \Stringable
         }
     }
 
-    #[ORM\Column(type: Types::JSON, nullable: true, options: ['jsonb' => true])]
+    #[ORM\Column(type: Types::JSONB, nullable: true)]
     private ?array $resized = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
