@@ -23,7 +23,7 @@ composer req survos/dummy-bundle
 bin/console doctrine:database:create --if-not-exists
 bin/console doctrine:schema:update --force
 bin/console dummy:load --purge
-bin/console doctrine:query:sql "select count(*) from product"
+bin/console dbal:run-sql "select count(*) from product"
 ```
 
 ## Local Path Repository
@@ -39,7 +39,7 @@ composer req survos/dummy-bundle
 bin/console doctrine:database:create --if-not-exists
 bin/console doctrine:schema:update --force
 bin/console dummy:load --purge
-bin/console doctrine:query:sql "select count(*) from product"
+bin/console dbal:run-sql "select count(*) from product"
 ```
 
 ## Entity Diagram

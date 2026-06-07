@@ -21,7 +21,27 @@ final class LoadDummyCommand
     public function __invoke(
         SymfonyStyle $io,
         #[Option('Purge existing rows before import')] bool $purge = false,
+        #[Option('Fetch DummyJSON to .jsonl files instead of inserting into the database')] bool $fetchOnly = false,
+        #[Option('Output directory for fetched .jsonl files (relative to cwd)')] string $dir = 'var/dummy',
     ): int {
+        if ($fetchOnly) {
+            $io->title('Fetch DummyJSON → JSONL');
+
+            $counts = $this->dummyLoader->fetchToJsonl($dir);
+
+            $io->table(
+                ['File', 'Rows'],
+                array_map(
+                    static fn (string $name, int $n): array => [sprintf('%s/%s.jsonl', rtrim($dir, '/'), $name), (string) $n],
+                    array_keys($counts),
+                    array_values($counts),
+                ),
+            );
+            $io->success(sprintf('Fetched %d collections into %s — index with: bin/console jsonl:index %s/products.jsonl --pk id --facet category', count($counts), $dir, rtrim($dir, '/')));
+
+            return Command::SUCCESS;
+        }
+
         $io->title('Load DummyJSON data');
         $io->definitionList(['Purge' => $purge ? 'yes' : 'no']);
 

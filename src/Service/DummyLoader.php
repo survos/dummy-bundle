@@ -17,6 +17,7 @@ use Survos\DummyBundle\Repository\PostRepository;
 use Survos\DummyBundle\Repository\ProductRepository;
 use Survos\DummyBundle\Repository\ProductReviewRepository;
 use Survos\DummyBundle\Repository\UserRepository;
+use Survos\JsonlBundle\IO\JsonlWriter;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -205,6 +206,38 @@ final class DummyLoader
         }
 
         $this->entityManager->flush();
+
+        return $counts;
+    }
+
+    /**
+     * Fetch the DummyJSON collections and write each to a `.jsonl` file (raw rows,
+     * no database). Products keep their nested `reviews`/`images` arrays — useful
+     * fodder for jsonl-bundle indexing/profiling.
+     *
+     * @return array{users:int,posts:int,comments:int,products:int} rows written per file
+     */
+    public function fetchToJsonl(string $dir): array
+    {
+        $sources = [
+            'users' => [self::USERS_URL, 'users'],
+            'posts' => [self::POSTS_URL, 'posts'],
+            'comments' => [self::COMMENTS_URL, 'comments'],
+            'products' => [self::PRODUCTS_URL, 'products'],
+        ];
+
+        $counts = [];
+        foreach ($sources as $name => [$url, $key]) {
+            $rows = $this->fetchCollection($url, $key);
+
+            $writer = JsonlWriter::open(sprintf('%s/%s.jsonl', rtrim($dir, '/'), $name));
+            foreach ($rows as $row) {
+                $writer->write($row);
+            }
+            $writer->finish();
+
+            $counts[$name] = count($rows);
+        }
 
         return $counts;
     }
