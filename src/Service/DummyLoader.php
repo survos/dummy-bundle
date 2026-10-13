@@ -62,12 +62,12 @@ final class DummyLoader
 
         foreach ($this->fetchCollection(self::USERS_URL, 'users') as $row) {
             $id = $this->intOrNull($row['id'] ?? null);
-            if ($id === null) {
+            if (null === $id) {
                 continue;
             }
 
             $user = $this->userRepository->find($id);
-            $isNew = $user === null;
+            $isNew = null === $user;
             $user ??= new User($id);
             $user
                 ->setData($row)
@@ -85,17 +85,17 @@ final class DummyLoader
         foreach ($this->fetchCollection(self::POSTS_URL, 'posts') as $row) {
             $id = $this->intOrNull($row['id'] ?? null);
             $userId = $this->intOrNull($row['userId'] ?? null);
-            if ($id === null || $userId === null) {
+            if (null === $id || null === $userId) {
                 continue;
             }
 
             $user = $this->userRepository->find($userId);
-            if ($user === null) {
+            if (null === $user) {
                 continue;
             }
 
             $post = $this->postRepository->find($id);
-            $isNew = $post === null;
+            $isNew = null === $post;
             $post ??= new Post($id);
             $reactions = is_array($row['reactions'] ?? null) ? $row['reactions'] : [];
             $post
@@ -118,18 +118,18 @@ final class DummyLoader
             $postId = $this->intOrNull($row['postId'] ?? null);
             $userInfo = is_array($row['user'] ?? null) ? $row['user'] : [];
             $userId = $this->intOrNull($userInfo['id'] ?? null);
-            if ($id === null || $postId === null || $userId === null) {
+            if (null === $id || null === $postId || null === $userId) {
                 continue;
             }
 
             $post = $this->postRepository->find($postId);
             $user = $this->userRepository->find($userId);
-            if ($post === null || $user === null) {
+            if (null === $post || null === $user) {
                 continue;
             }
 
             $comment = $this->commentRepository->find($id);
-            $isNew = $comment === null;
+            $isNew = null === $comment;
             $comment ??= new Comment($id);
             $comment
                 ->setPost($post)
@@ -145,12 +145,12 @@ final class DummyLoader
 
         foreach ($this->fetchCollection(self::PRODUCTS_URL, 'products') as $row) {
             $sku = isset($row['sku']) && is_string($row['sku']) ? $row['sku'] : null;
-            if ($sku === null || $sku === '') {
+            if (null === $sku || '' === $sku) {
                 continue;
             }
 
             $product = $this->productRepository->findOneBySku($sku);
-            $isNew = $product === null;
+            $isNew = null === $product;
             $product ??= new Product($sku, $row);
             $product
                 ->setDummyId($this->intOrNull($row['id'] ?? null))
@@ -171,7 +171,7 @@ final class DummyLoader
             foreach ($this->normalizeStringArray($row['images'] ?? []) as $imageUrl) {
                 $code = Image::calculateCode($imageUrl);
                 $image = $this->imageRepository->findOneByProductAndCode($product, $code);
-                $wasNew = $image === null;
+                $wasNew = null === $image;
                 $image ??= new Image($product, $imageUrl, $code);
                 $this->entityManager->persist($image);
                 $product->addImage($image);
@@ -188,7 +188,7 @@ final class DummyLoader
 
                 $code = ProductReview::calculateCode($sku, $reviewRow);
                 $review = $this->productReviewRepository->find($code);
-                $wasNew = $review === null;
+                $wasNew = null === $review;
                 $review ??= new ProductReview($code);
                 $review
                     ->setProduct($product)
@@ -263,7 +263,7 @@ final class DummyLoader
     {
         $payload = $this->cache->get(md5($url), function (ItemInterface $item) use ($url): array {
             $contents = @file_get_contents($url);
-            if ($contents === false) {
+            if (false === $contents) {
                 throw new \RuntimeException(sprintf('Unable to read DummyJSON source "%s".', $url));
             }
 
@@ -279,7 +279,7 @@ final class DummyLoader
 
     private function nullableString(mixed $value): ?string
     {
-        return is_string($value) && $value !== '' ? $value : null;
+        return is_string($value) && '' !== $value ? $value : null;
     }
 
     private function intOrNull(mixed $value): ?int
@@ -289,7 +289,7 @@ final class DummyLoader
 
     private function dateOrNull(mixed $value): ?\DateTimeImmutable
     {
-        if (!is_string($value) || $value === '') {
+        if (!is_string($value) || '' === $value) {
             return null;
         }
 
@@ -301,7 +301,6 @@ final class DummyLoader
     }
 
     /**
-     * @param mixed $value
      * @return list<string>
      */
     private function normalizeStringArray(mixed $value): array
@@ -310,6 +309,6 @@ final class DummyLoader
             return [];
         }
 
-        return array_values(array_filter($value, static fn (mixed $item): bool => is_string($item) && $item !== ''));
+        return array_values(array_filter($value, static fn (mixed $item): bool => is_string($item) && '' !== $item));
     }
 }

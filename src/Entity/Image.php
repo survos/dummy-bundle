@@ -23,7 +23,7 @@ class Image implements \Stringable
         #[ORM\Column(type: Types::TEXT)]
         private ?string $code = null,
     ) {
-        if ($this->code === null && $this->originalUrl !== null) {
+        if (null === $this->code && null !== $this->originalUrl) {
             $this->code = self::calculateCode($this->originalUrl);
         }
     }
