@@ -27,7 +27,6 @@ final class SurvosDummyBundle extends AbstractBundle
                         'type' => 'attribute',
                         'dir' => \dirname(__DIR__).'/src/Entity',
                         'prefix' => 'Survos\\DummyBundle\\Entity',
-                        'alias' => 'Dummy',
                     ],
                 ],
             ],
